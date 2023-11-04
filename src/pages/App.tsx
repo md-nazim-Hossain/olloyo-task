@@ -1,16 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
-import DraggableItem from "../components/draggble-item";
+import ReorderGroup from "../components/reorder-group";
 import TopBar from "../components/top-bar";
 import { data } from "../data";
-import { IImage } from "../types";
+import { IChecked } from "../types";
 
 function App() {
   const [images, setImages] = React.useState(data);
-  const [checked, setChecked] = React.useState<null | {
-    id: number;
-    checked: boolean;
-  }>(null);
+  const [checked, setChecked] = React.useState<IChecked>(null);
 
   React.useEffect(() => {
     setImages((prev) =>
@@ -33,64 +30,19 @@ function App() {
     setImages((prev) => prev.filter((image) => !image.checked));
   };
 
-  const handleOnDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const items = Array.from(images);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setImages(items);
-  };
-
   return (
     <div className="w-screen bg-gray-100 min-h-screen py-10">
       <div className="bg-white w-full max-w-[1200px] mx-auto rounded-md shadow ">
         <TopBar checkDataLength={checkDataLength} handleDelete={handleDelete} />
 
         {/* =================== image gallery part ===============*/}
-
-        <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable
-            droppableId="droppable"
-            type="image"
-            direction="horizontal"
-          >
-            {(provided) => {
-              return (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="p-5 sm:p-10 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-5 sm:gap-5"
-                >
-                  {images.map((image: IImage, index: number) => (
-                    <DraggableItem
-                      index={index}
-                      image={image}
-                      setChecked={(id, checked) => setChecked({ id, checked })}
-                      key={image.id}
-                    />
-                  ))}
-
-                  {/* =================== upload image design ===============*/}
-                  <div className="w-full flex justify-center items-center bg-gray-50 aspect-square rounded-lg border-2 border-dashed cursor-pointer">
-                    <div className="space-y-5">
-                      <img
-                        src="/assets/images/empty.png"
-                        width={24}
-                        height={16}
-                        alt="Empty Images"
-                        className="object-cover mx-auto"
-                      />
-                      <h2 className="text-xl font-bold text-gray-600">
-                        Add Images
-                      </h2>
-                    </div>
-                  </div>
-                  {provided.placeholder}
-                </div>
-              );
-            }}
-          </Droppable>
-        </DragDropContext>
+        <div className="p-5 sm:p-10">
+          <ReorderGroup
+            setChecked={setChecked}
+            images={images}
+            setImages={setImages}
+          />
+        </div>
       </div>
     </div>
   );

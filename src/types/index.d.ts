@@ -1,6 +1,10 @@
 export type IImage = {
-  id: number;
+  id: string;
   src: string;
   checked: boolean;
-  order: number;
+};
+
+export type IChecked = null | {
+  id: string;
+  checked: boolean;
 };
