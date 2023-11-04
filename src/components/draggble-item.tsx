@@ -6,7 +6,7 @@ type Props = {
   index: number;
   setChecked: (id: number, checked: boolean) => void;
 };
-function Image({ image, index, setChecked }: Props) {
+function DraggableItem({ image, index, setChecked }: Props) {
   const { checked, id, src } = image;
 
   return (
@@ -52,4 +52,4 @@ function Image({ image, index, setChecked }: Props) {
   );
 }
 
-export default Image;
+export default DraggableItem;

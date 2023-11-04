@@ -1,6 +1,6 @@
 import * as React from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import Image from "../components/image";
+import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
+import DraggableItem from "../components/draggble-item";
 import TopBar from "../components/top-bar";
 import { data } from "../data";
 import { IImage } from "../types";
@@ -33,6 +33,14 @@ function App() {
     setImages((prev) => prev.filter((image) => !image.checked));
   };
 
+  const handleOnDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const items = Array.from(images);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setImages(items);
+  };
+
   return (
     <div className="w-screen bg-gray-100 min-h-screen py-10">
       <div className="bg-white w-full max-w-[1200px] mx-auto rounded-md shadow ">
@@ -40,8 +48,12 @@ function App() {
 
         {/* =================== image gallery part ===============*/}
 
-        <DragDropContext onDragEnd={() => {}}>
-          <Droppable droppableId="droppable" type="image">
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable
+            droppableId="droppable"
+            type="image"
+            direction="horizontal"
+          >
             {(provided) => {
               return (
                 <div
@@ -50,7 +62,7 @@ function App() {
                   className="p-5 sm:p-10 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-5 sm:gap-5"
                 >
                   {images.map((image: IImage, index: number) => (
-                    <Image
+                    <DraggableItem
                       index={index}
                       image={image}
                       setChecked={(id, checked) => setChecked({ id, checked })}
