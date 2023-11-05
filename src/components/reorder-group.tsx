@@ -1,6 +1,5 @@
-import { Reorder, useMotionValue } from "framer-motion";
+import { Reorder } from "framer-motion";
 import React, { Dispatch, SetStateAction } from "react";
-import { useRaisedShadow } from "../hooks/use-raised-shadow";
 import { cn } from "../lib/utils";
 import { IChecked, IImage } from "../types";
 import Item from "./item";
@@ -12,8 +11,7 @@ type Props = {
 };
 function ReorderGroup({ images, setImages, setChecked }: Props) {
   const containerRef = React.useRef(null);
-  const y = useMotionValue(0);
-  const boxShadow = useRaisedShadow(y);
+
   return (
     <Reorder.Group
       axis="y"
@@ -31,7 +29,7 @@ function ReorderGroup({ images, setImages, setChecked }: Props) {
           layout
           dragConstraints={containerRef}
           dragElastic={0}
-          style={{ boxShadow }}
+          dragMomentum={false}
           className={cn(
             "w-full aspect-square bg-white relative overflow-hidden rounded-lg border-2 group",
             index === 0 && "sm:row-span-2 sm:col-span-2"
